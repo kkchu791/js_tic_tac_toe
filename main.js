@@ -13,34 +13,36 @@ function nextMove(square) {
       setPiece(square);
       document.counter = 0;
     }
-  }
 
-  if (playable()) {
-    switchPlayers()
-  } else {
-    document.gameOver = true
-    clearInterval(document.timer);
-    if (hasWinner()) {
-      message(`Player ${document.turn} wins!`)
+
+    if (playable()) {
+      switchPlayers()
     } else {
-      message(`It's a draw!`)
+      document.gameOver = true
+      clearInterval(document.timer);
+      if (hasWinner()) {
+        message(`Player ${document.turn} wins!`)
+      } else {
+        message(`It's a draw!`)
+      }
     }
   }
 }
 
 function startTimer() {
   document.counter = 0
-  var timeleft = 10;
+  var timeleft = 5.;
 
   var timer = document.getElementsByClassName("timer")[0]
   timer.innerText = (timeleft - document.counter);
 
   function timeIt() {
-    if (document.counter == 10) {
-      switchPlayers();
-      document.counter = 0;
+    if (document.counter == 5) {
+      message(`You ran out of time. Player ${document.turn} loses!`)
+      document.gameOver = true
+      clearInterval(document.timer);
     } else {
-      document.counter++;
+      document.counter += 1;
       timer.innerText = (timeleft - document.counter);
     }
   }
@@ -127,5 +129,6 @@ function reset() {
   }
   document.gameOver = false
   document.getElementsByClassName("message")[0].innerText = `Player ${document.turn} turn!`
+  clearInterval(document.timer);
   startTimer()
 }
