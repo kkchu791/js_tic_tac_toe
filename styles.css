@@ -1,0 +1,25 @@
+body {
+  width: 50%;
+  margin: auto;
+  font-family: Mansalva;
+  text-align: center;
+  background-color: #F3F5F9;
+}
+
+h1 {
+  border-bottom: 1px solid black;
+}
+
+.square {
+  height: 80px;
+  width: 80px;
+  font-size: 45pt;
+  text-align: center;
+
+  border: 1px solid black;
+}
+
+.board {
+  margin: 0 auto;
+
+}
