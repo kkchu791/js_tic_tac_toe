@@ -15,3 +15,14 @@ function switchTurn() {
     document.turn = "X";
   }
 }
+
+function reset() {
+  var el = document.getElementsByClassName("square");
+  // go through all elements and set the innerHTML to an empty string
+
+  for (var i = 0; i < el.length; i++) {
+    console.log(el[i])
+    el[i].innerText = "";
+  }
+
+}
