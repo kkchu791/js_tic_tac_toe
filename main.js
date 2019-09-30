@@ -2,6 +2,7 @@
 function startGame() {
   document.turn = "X";
   document.gameOver = false;
+  startTimer();
 }
 
 function nextMove(square) {
@@ -10,7 +11,7 @@ function nextMove(square) {
       return message("That spot is taken.")
     } else {
       setPiece(square);
-
+      document.counter = 0;
     }
   }
 
@@ -18,12 +19,33 @@ function nextMove(square) {
     switchPlayers()
   } else {
     document.gameOver = true
+    clearInterval(document.timer);
     if (hasWinner()) {
       message(`Player ${document.turn} wins!`)
     } else {
       message(`It's a draw!`)
     }
   }
+}
+
+function startTimer() {
+  document.counter = 0
+  var timeleft = 10;
+
+  var timer = document.getElementsByClassName("timer")[0]
+  timer.innerText = (timeleft - document.counter);
+
+  function timeIt() {
+    if (document.counter == 10) {
+      switchPlayers();
+      document.counter = 0;
+    } else {
+      document.counter++;
+      timer.innerText = (timeleft - document.counter);
+    }
+  }
+
+  document.timer = setInterval(timeIt, 1000);
 }
 
 function switchPlayers() {
@@ -105,5 +127,5 @@ function reset() {
   }
   document.gameOver = false
   document.getElementsByClassName("message")[0].innerText = `Player ${document.turn} turn!`
-
+  startTimer()
 }
