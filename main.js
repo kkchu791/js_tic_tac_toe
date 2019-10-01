@@ -2,24 +2,28 @@
 function startGame() {
   document.turn = "X";
   document.gameOver = false;
-  startTimer();
+  let timer = document.getElementsByClassName("timer")[0];
+  document.counter = new Counter(5, 0, timer, gameOver);
+  document.counter.start();
 }
 
 function nextMove(square) {
+  // if game over true, don't allow them to make any more moves
   if (document.gameOver === false) {
     if (taken(square)) {
       return message("That spot is taken.")
     } else {
+      document.counter.reset(-1);
       setPiece(square);
-      document.counter = 0;
     }
 
 
     if (playable()) {
-      switchPlayers()
+      switchTurn();
+      message(`Player ${document.turn} turn!`)
     } else {
       document.gameOver = true
-      clearInterval(document.timer);
+      document.counter.clear();
       if (hasWinner()) {
         message(`Player ${document.turn} wins!`)
       } else {
@@ -29,30 +33,10 @@ function nextMove(square) {
   }
 }
 
-function startTimer() {
-  document.counter = 0
-  var timeleft = 5.;
-
-  var timer = document.getElementsByClassName("timer")[0]
-  timer.innerText = (timeleft - document.counter);
-
-  function timeIt() {
-    if (document.counter == 5) {
-      message(`You ran out of time. Player ${document.turn} loses!`)
-      document.gameOver = true
-      clearInterval(document.timer);
-    } else {
-      document.counter += 1;
-      timer.innerText = (timeleft - document.counter);
-    }
-  }
-
-  document.timer = setInterval(timeIt, 1000);
-}
-
-function switchPlayers() {
-  switchTurn();
-  message(`Player ${document.turn} turn!`)
+function gameOver() {
+  document.gameOver = true;
+  message(`You ran out of time. Player ${document.turn} loses!`);
+  document.counter.clear();
 }
 
 function setPiece(square) {
@@ -60,22 +44,22 @@ function setPiece(square) {
 }
 
 function message(msg) {
-  return document.getElementsByClassName("message")[0].innerText = msg
+  return document.getElementsByClassName("message")[0].innerText = msg;
 }
 
 function taken(square) {
-  return square.innerText != ""
+  return square.innerText != "";
 }
 
 function playable() {
-  return hasWinner() === false && board_has_empty_slots()
+  return hasWinner() === false && board_has_empty_slots();
 }
 
 function board_has_empty_slots() {
   const slots = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
   return slots.some(num => {
-    return document.getElementById(num).innerText === ""
+    return document.getElementById(num).innerText === "";
   })
 }
 
@@ -88,17 +72,17 @@ function switchTurn() {
 }
 
 function hasWinner() {
-  const sq_1 = document.getElementById("1").innerText
-  const sq_2 = document.getElementById("2").innerText
-  const sq_3 = document.getElementById("3").innerText
-
-  const sq_4 = document.getElementById("4").innerText
-  const sq_5 = document.getElementById("5").innerText
-  const sq_6 = document.getElementById("6").innerText
-
-  const sq_7 = document.getElementById("7").innerText
-  const sq_8 = document.getElementById("8").innerText
-  const sq_9 = document.getElementById("9").innerText
+  const [sq_1,
+        sq_2,
+        sq_3,
+        sq_4,
+        sq_5,
+        sq_6,
+        sq_7,
+        sq_8,
+        sq_9] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"].map(num => {
+          return document.getElementById(num).innerText;
+        })
 
 
   return checkRow(sq_1, sq_2, sq_3) ||
@@ -127,8 +111,10 @@ function reset() {
   for (var i = 0; i < squares.length; i++) {
     squares[i].innerText = "";
   }
+
   document.gameOver = false
   document.getElementsByClassName("message")[0].innerText = `Player ${document.turn} turn!`
-  clearInterval(document.timer);
-  startTimer()
+  document.counter.clear();
+  document.counter.reset();
+  document.counter.start();
 }
